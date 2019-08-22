@@ -53,7 +53,7 @@ namespace DTV
 
 		#region System instructions
 		public void Halt() => OnSystemHaltEvent(null);
-		public void Nop() {}
+		public void Nop() {/* Instruction CAN be decoded as a copy from r0 to r0, and in effect this method MIGHT only be called artificially, and not by a "real" program. */}
 		public void Read(byte rX) 
 		{
 			ushort value;
@@ -69,7 +69,7 @@ namespace DTV
 		public void Copy(byte rX, byte rY) { throw new NotImplementedException(); }
 		#endregion
 		#region Arithmetic
-		public void Neg(byte rX, byte rY) { throw new NotImplementedException(); }
+		public void Neg(byte rX, byte rY) { throw new NotImplementedException(); } // reuses subtract
 		public void Add(byte rX, byte rY, byte rZ) { Registers[rX] = (ushort)(Registers[rY] + Registers[rZ]); }
 		public void Sub(byte rX, byte rY, byte rZ) { throw new NotImplementedException(); }
 		public void Mul(byte rX, byte rY, byte rZ) { Registers[rX] = (ushort)(Registers[rY] * Registers[rZ]); }
@@ -103,19 +103,19 @@ namespace DTV
 		
 		private static Dictionary<Instruction, MaskIdentityPair> InstructionMaskIdentityPairs = new Dictionary<Instruction, MaskIdentityPair>(){
 			{HALT, new MaskIdentityPair(){Mask=(ushort)0b1111_1111_1111_1111, Identity=(ushort)0b0000_0000_0000_0000}},
-			{NOP, new MaskIdentityPair(){Mask=(ushort)0b1111_1111_1111_1111, Identity=(ushort)0b0110_0000_0000_0000}},
+			{NOP, new MaskIdentityPair(){Mask=(ushort)0b1111_1111_1111_1111, Identity=(ushort)0b0110_0000_0000_0000}}, // NOP is equivalent to `COPY r0 r0`
 			{READ, new MaskIdentityPair(){Mask=(ushort)0b1111_0000_1111_1111, Identity=(ushort)0b0000_0000_0000_0001}},
-			{WRITE, new MaskIdentityPair(){Mask=(ushort)0b1111_1111_1111_1111, Identity=(ushort)0b0110_0000_0000_0010}},
+			{WRITE, new MaskIdentityPair(){Mask=(ushort)0b1111_0000_1111_1111, Identity=(ushort)0b0000_0000_0000_0010}},
 			{SETN, new MaskIdentityPair(){Mask=(ushort)0b1111_0000_0000_0000, Identity=(ushort)0b0001_0000_0000_0000}},
 			{LOADR, new MaskIdentityPair(){Mask=(ushort)0b1111_0000_0000_1111, Identity=(ushort)0b0100_0000_0000_0000}},
 			{STORER, new MaskIdentityPair(){Mask=(ushort)0b1111_0000_0000_1111, Identity=(ushort)0b0100_0000_0000_0001}},
 			{POPR, new MaskIdentityPair(){Mask=(ushort)0b1111_0000_0000_1111, Identity=(ushort)0b0100_0000_0000_0010}},
 			{PUSHR, new MaskIdentityPair(){Mask=(ushort)0b1111_0000_0000_1111, Identity=(ushort)0b0100_0000_0000_0011}},
-			{LOADN, new MaskIdentityPair(){Mask=(ushort)0b1111_0000_0000_0000, Identity=(ushort)0b0100_0000_0000_0000}},
+			{LOADN, new MaskIdentityPair(){Mask=(ushort)0b1111_0000_0000_0000, Identity=(ushort)0b0010_0000_0000_0000}},
 			{STOREN, new MaskIdentityPair(){Mask=(ushort)0b1111_0000_0000_0000, Identity=(ushort)0b0011_0000_0000_0000}},
 			{ADDN, new MaskIdentityPair(){Mask=(ushort)0b1111_0000_0000_0000, Identity=(ushort)0b0101_0000_0000_0000}},
-			{COPY, new MaskIdentityPair(){Mask=(ushort)0b1111_0000_0000_1111, Identity=(ushort)0b0110_0000_0000_000}},
-			{NEG, new MaskIdentityPair(){Mask=(ushort)0b1111_0000_1111_0000, Identity=(ushort)0b0111_0000_0000_0000}},
+			{COPY, new MaskIdentityPair(){Mask=(ushort)0b1111_0000_0000_1111, Identity=(ushort)0b0110_0000_0000_0000}},
+			{NEG, new MaskIdentityPair(){Mask=(ushort)0b1111_0000_1111_0000, Identity=(ushort)0b0111_0000_0000_0000}}, // NEG is equivalent to `SUB rX r0 rY`
 			{ADD, new MaskIdentityPair(){Mask=(ushort)0b1111_0000_0000_0000, Identity=(ushort)0b0110_0000_0000_0000}},
 			{SUB, new MaskIdentityPair(){Mask=(ushort)0b1111_0000_0000_0000, Identity=(ushort)0b0111_0000_0000_0000}},
 			{MUL, new MaskIdentityPair(){Mask=(ushort)0b1111_0000_0000_0000, Identity=(ushort)0b1000_0000_0000_0000}},
@@ -127,7 +127,7 @@ namespace DTV
 			{JNEZ, new MaskIdentityPair(){Mask=(ushort)0b1111_0000_0000_0000, Identity=(ushort)0b1101_0000_0000_0000}},
 			{JGTZ, new MaskIdentityPair(){Mask=(ushort)0b1111_0000_0000_0000, Identity=(ushort)0b1110_0000_0000_0000}},
 			{JLTZ, new MaskIdentityPair(){Mask=(ushort)0b1111_0000_0000_0000, Identity=(ushort)0b1111_0000_0000_0000}},
-			{CALL, new MaskIdentityPair(){Mask=(ushort)0b1111_0000_1111_1111, Identity=(ushort)0b1011_0000_0000_0000}}
+			{CALL, new MaskIdentityPair(){Mask=(ushort)0b1111_0000_1111_1111, Identity=(ushort)0b1011_0000_0000_0000}} // CALL r0 N is equivalent to JUMPN N
 			
 		};
 
