@@ -103,7 +103,32 @@ namespace DTV
 		
 		private static Dictionary<Instruction, MaskIdentityPair> InstructionMaskIdentityPairs = new Dictionary<Instruction, MaskIdentityPair>(){
 			{HALT, new MaskIdentityPair(){Mask=(ushort)0b1111_1111_1111_1111, Identity=(ushort)0b0000_0000_0000_0000}},
-			{NOP, new MaskIdentityPair(){Mask=(ushort)0b1111_1111_1111_1111, Identity=(ushort)0b0110_0000_0000_0000}}
+			{NOP, new MaskIdentityPair(){Mask=(ushort)0b1111_1111_1111_1111, Identity=(ushort)0b0110_0000_0000_0000}},
+			{READ, new MaskIdentityPair(){Mask=(ushort)0b1111_0000_1111_1111, Identity=(ushort)0b0000_0000_0000_0001}},
+			{WRITE, new MaskIdentityPair(){Mask=(ushort)0b1111_1111_1111_1111, Identity=(ushort)0b0110_0000_0000_0010}},
+			{SETN, new MaskIdentityPair(){Mask=(ushort)0b1111_0000_0000_0000, Identity=(ushort)0b0001_0000_0000_0000}},
+			{LOADR, new MaskIdentityPair(){Mask=(ushort)0b1111_0000_0000_1111, Identity=(ushort)0b0100_0000_0000_0000}},
+			{STORER, new MaskIdentityPair(){Mask=(ushort)0b1111_0000_0000_1111, Identity=(ushort)0b0100_0000_0000_0001}},
+			{POPR, new MaskIdentityPair(){Mask=(ushort)0b1111_0000_0000_1111, Identity=(ushort)0b0100_0000_0000_0010}},
+			{PUSHR, new MaskIdentityPair(){Mask=(ushort)0b1111_0000_0000_1111, Identity=(ushort)0b0100_0000_0000_0011}},
+			{LOADN, new MaskIdentityPair(){Mask=(ushort)0b1111_0000_0000_0000, Identity=(ushort)0b0100_0000_0000_0000}},
+			{STOREN, new MaskIdentityPair(){Mask=(ushort)0b1111_0000_0000_0000, Identity=(ushort)0b0011_0000_0000_0000}},
+			{ADDN, new MaskIdentityPair(){Mask=(ushort)0b1111_0000_0000_0000, Identity=(ushort)0b0101_0000_0000_0000}},
+			{COPY, new MaskIdentityPair(){Mask=(ushort)0b1111_0000_0000_1111, Identity=(ushort)0b0110_0000_0000_000}},
+			{NEG, new MaskIdentityPair(){Mask=(ushort)0b1111_0000_1111_0000, Identity=(ushort)0b0111_0000_0000_0000}},
+			{ADD, new MaskIdentityPair(){Mask=(ushort)0b1111_0000_0000_0000, Identity=(ushort)0b0110_0000_0000_0000}},
+			{SUB, new MaskIdentityPair(){Mask=(ushort)0b1111_0000_0000_0000, Identity=(ushort)0b0111_0000_0000_0000}},
+			{MUL, new MaskIdentityPair(){Mask=(ushort)0b1111_0000_0000_0000, Identity=(ushort)0b1000_0000_0000_0000}},
+			{DIV, new MaskIdentityPair(){Mask=(ushort)0b1111_0000_0000_0000, Identity=(ushort)0b1001_0000_0000_0000}},
+			{MOD, new MaskIdentityPair(){Mask=(ushort)0b1111_0000_0000_0000, Identity=(ushort)0b1010_0000_0000_0000}},
+			{JUMP, new MaskIdentityPair(){Mask=(ushort)0b1111_0000_1111_1111, Identity=(ushort)0b0000_0000_0000_0011}},
+			{JUMPN, new MaskIdentityPair(){Mask=(ushort)0b1111_1111_0000_0000, Identity=(ushort)0b1011_0000_0000_0000}},
+			{JEQZ, new MaskIdentityPair(){Mask=(ushort)0b1111_0000_0000_0000, Identity=(ushort)0b1100_0000_0000_0000}},
+			{JNEZ, new MaskIdentityPair(){Mask=(ushort)0b1111_0000_0000_0000, Identity=(ushort)0b1101_0000_0000_0000}},
+			{JGTZ, new MaskIdentityPair(){Mask=(ushort)0b1111_0000_0000_0000, Identity=(ushort)0b1110_0000_0000_0000}},
+			{JLTZ, new MaskIdentityPair(){Mask=(ushort)0b1111_0000_0000_0000, Identity=(ushort)0b1111_0000_0000_0000}},
+			{CALL, new MaskIdentityPair(){Mask=(ushort)0b1111_0000_1111_1111, Identity=(ushort)0b1011_0000_0000_0000}}
+			
 		};
 
 		private string FormatBinaryString(ushort number){
