@@ -66,35 +66,34 @@ namespace DTV
 		#region Setting register data
 		public void SetN(byte rX, byte n) { memory[rX] = n; }
 		public void AddN(byte rX, byte n) { Registers[rX] = (ushort)(Registers[rX] + n); }
-		public void Copy(byte rX, byte rY) { throw new NotImplementedException(); }
+		public void Copy(byte rX, byte rY) { Registers[rX] = Registers[rY]; }
 		#endregion
 		#region Arithmetic
-		public void Neg(byte rX, byte rY) { throw new NotImplementedException(); } // reuses subtract
+		public void Neg(byte rX, byte rY) { Sub(rX, Registers[0], rY); } // reuses subtract
 		public void Add(byte rX, byte rY, byte rZ) { Registers[rX] = (ushort)(Registers[rY] + Registers[rZ]); }
-		public void Sub(byte rX, byte rY, byte rZ) { throw new NotImplementedException(); }
+		public void Sub(byte rX, byte rY, byte rZ) { Registers[rX] = Registers[rY] - Registers[rZ]; }
 		public void Mul(byte rX, byte rY, byte rZ) { Registers[rX] = (ushort)(Registers[rY] * Registers[rZ]); }
-		public void Div(byte rX, byte rY, byte rZ) { throw new NotImplementedException(); }
-		public void Mod(byte rX, byte rY, byte rZ) { throw new NotImplementedException(); }
+		public void Div(byte rX, byte rY, byte rZ) { Registers[rX] = (ushort)(Registers[rY] / Registers[rZ]); }
+		public void Mod(byte rX, byte rY, byte rZ) { Registers[rX] = (ushort)(Registers[rY] % Registers[rZ]); }
 		#endregion
 		#region Jumps
 		public void LoadR(byte rX, byte rY) { Registers[rX] = memory[rY]; }
 		public void StoreR(byte rX, byte rY) { memory[rY] = Registers[rX]; }
-		public void PopR(byte rX, byte rY) { throw new NotImplementedException(); }
-		public void PushR(byte rX, byte rY) { throw new NotImplementedException(); }
-		public void LoadN(byte rX, byte n) { throw new NotImplementedException(); }
-		public void StoreN(byte rX, byte n) { throw new NotImplementedException(); }
-		public void Jump(byte rX) { throw new NotImplementedException(); }
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <remarks>The official Hmmm spec indicates that a Jump to -1 is possible however seeing as the memory addresses range from 0 to 255 for 256 words and that is exactly the number of addresses that can be represented by a byte, which is what the instruction uses for n,
-		/// I believe this to be an oversight enabled by the use of Python in the original Hmmm simulator.</remarks>
-		public void JumpN(byte n) { throw new NotImplementedException(); }
-		public void Jeqz(byte rX, byte n) { throw new NotImplementedException(); }
-		public void Jneqz(byte rX, byte n) { throw new NotImplementedException(); }
-		public void Jgtz(byte rX, byte n) { throw new NotImplementedException(); }
-		public void Jltz(byte rX, byte n) { throw new NotImplementedException(); }
-		public void CallN(byte rX, byte n) { throw new NotImplementedException(); }
+		public void PopR(byte rX, byte rY) { Registers[rY] -= 1; Registers[rX] = memory[Registers[rY]]; }
+		public void PushR(byte rX, byte rY) { memory[Registers[rY]] = Registers[rX]; Registers[rY] += 1; }
+		public void LoadN(byte rX, byte n) { Register[rX] = n; }
+		public void StoreN(byte rX, byte n) { memory[n] = Registers[rX]; }
+		public void Jump(byte rX) { ProgramCounter = Registers[rX]; }
+		/// <remarks>
+		/// The official Hmmm spec indicates that a Jump to -1 is possible however seeing as the memory addresses range from 0 to 255 for 256 words and that is exactly the number of addresses that can be represented by a byte, which is what the instruction uses for n,
+		/// I believe this to be an oversight enabled by the use of Python in the original Hmmm simulator.
+		/// </remarks>
+		public void JumpN(byte n) { ProgramCounter = n; }
+		public void Jeqz(byte rX, byte n) { (Registers[rX] == 0) ? (JumpN(n)) : Nop(); }
+		public void Jneqz(byte rX, byte n) { (Registers[rX] != 0) ? (JumpN(n)) : Nop(); }
+		public void Jgtz(byte rX, byte n) { (Registers[rX] > 0) ? (JumpN(n)) : Nop(); }
+		public void Jltz(byte rX, byte n) { (Registers[rX] < 0) ? (JumpN(n)) : Nop(); }
+		public void CallN(byte rX, byte n) { Registers[rX] = ProgramCounter + 1; ProgramCounter = n; }
 		#endregion
 		#region Aliases
 		public void Call(byte rX, byte n) => CallN(rX, n);
