@@ -1,15 +1,21 @@
 # Building
 From the root of the repo, do:
-`dotnet build ./path/to/project/you/want/to/build`
+
+`dotnet build ./path/to/CSharpProject_you_want_to_build`
 
 ## Test bench
-`dotnet build ./Bench/Bench.csproj`
+Pressing **F5** will build and run the test bench in VS Code.
 
-Run the bench with 
+Alternatively build and run the bench with: 
+
+`dotnet build ./Bench/Bench.csproj`
 
 `dotnet run --project ./Bench/Bench.csproj`
 
 ## Class library (.DLL)
+Build the Hmmm project for a portable DLL for use in other projects.
+Targets netstandard2.0 as of this writing.
+
 `dotnet build ./Hmmm/Hmmm.csproj`
 
 # Notes
